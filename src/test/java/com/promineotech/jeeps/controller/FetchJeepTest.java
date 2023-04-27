@@ -2,6 +2,7 @@ package com.promineotech.jeeps.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
+import com.promineotech.jeeps.controller.Supports.FetchJeepTestSupport;
 import com.promineotech.jeeps.entity.JeepModel;
 import com.promineotech.jeeps.entity.Jeeps;
 
@@ -23,7 +25,13 @@ import com.promineotech.jeeps.entity.Jeeps;
                  "classpath:flyway/migrations/V1.1_Jeep_Data.sql"},
                   config = @SqlConfig(encoding = "utf-8"))
 
-class FetchJeepTest{
+class FetchJeepTest extends FetchJeepTestSupport{
+  
+  @Test
+  void testDb() {
+    
+  }
+ 
   @Autowired
   @LocalServerPort
   void testThatJeepAreReturnedWhenAValidModelAndTrimAreSupplied() {
@@ -36,9 +44,10 @@ class FetchJeepTest{
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   
   
+
+    List<Jeeps> expected = buildExpected();
+    assertThat(response.getBody()).isEqualTo(expected);
   }
-  
-  
   private TestRestTemplate restTemplate;
   
   private int serverPort;
